@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   // --- 2. ADD A LIST FOR YOUR APPBAR TITLES ---
   final List<String> _pageTitles = [
-    'Student App',
+    'Magic card',
     'Profile',
     'My Journal'
   ];
