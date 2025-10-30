@@ -144,7 +144,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               tag: 'avatarHero',
               child: CircleAvatar(
                 radius: 70,
-                backgroundImage: const AssetImage('assets/lottie/avatar.png'),
+                backgroundImage: const AssetImage('assets/avatar.png'),
               ),
             ),
             const SizedBox(height: 20),

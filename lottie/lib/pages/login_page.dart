@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:lottie/lottie.dart';
 import 'register_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -47,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
               tag: 'avatarHero',
               child: CircleAvatar(
                 radius: 60,
-                backgroundImage: AssetImage('assets/avatar.png'),
+                child: Lottie.asset('assets/lottie/avatar.json'),
               ),
             ),
             bodyWidget: Padding(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -55,13 +56,13 @@ class _RegisterPageState extends State<RegisterPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Hero(
-                tag: 'avatarHero',
-                child: CircleAvatar(
-                  radius: 60,
-                  backgroundImage: const AssetImage('assets/avatar.png'),
-                ),
+            Hero(
+              tag: 'avatarHero',
+              child: CircleAvatar(
+                radius: 60,
+                child: Lottie.asset('assets/lottie/avatar.json'),
               ),
+            ),
               const SizedBox(height: 30),
               TextField(
                 controller: _nameCtrl,
