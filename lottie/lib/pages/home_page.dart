@@ -5,6 +5,10 @@ import 'package:lottie/lottie.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 
+// --- 1. ADD IMPORTS FOR YOUR DIARY ---
+import '../dairy/screens/home_screen.dart'; // The screen we modified
+import '../dairy/screens/add_edit_screen.dart'; // The screen for adding new entries
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -26,10 +30,17 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     '“Stay curious and keep learning.” 🚀',
   ];
 
+  // --- 2. ADD A LIST FOR YOUR APPBAR TITLES ---
+  final List<String> _pageTitles = [
+    'Student App',
+    'Profile',
+    'My Journal'
+  ];
+
   void _toggleCard() {
     setState(() {
       _flipped = !_flipped;
-      _angle += pi; 
+      _angle += pi;
     });
   }
 
@@ -48,7 +59,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     _quoteTimer.cancel();
     super.dispose();
   }
-
 
   Widget _buildHomePage() {
     return Center(
@@ -94,7 +104,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                       child: Center(
                         child: isBack
                             ? Lottie.asset('assets/lottie/anime.json')
-                            : const Icon(Icons.favorite, color: Colors.white, size: 90),
+                            : const Icon(Icons.favorite,
+                                color: Colors.white, size: 90),
                       ),
                     ),
                   );
@@ -108,7 +119,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             animatedTexts: [
               FadeAnimatedText(
                 quotes[_quoteIndex],
-                textStyle: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                textStyle:
+                    const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
             ],
             repeatForever: true,
@@ -119,7 +131,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.deepPurple,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30)),
             ),
             icon: const Icon(Icons.auto_awesome, color: Colors.white),
             label: const Text(
@@ -131,7 +144,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       ),
     );
   }
-
 
   Widget _buildInfoPage() {
     return Center(
@@ -158,11 +170,11 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               'Бүтээлч сэтгэлгээг хөгжүүлэхэд тусалдаг!',
               textAlign: TextAlign.center,
             ),
-
             const SizedBox(height: 20),
             ElevatedButton.icon(
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-              onPressed: () => Navigator.pushNamedAndRemoveUntil(context, '/login', (r) => false),
+              onPressed: () =>
+                  Navigator.pushNamedAndRemoveUntil(context, '/login', (r) => false),
               icon: const Icon(Icons.logout, color: Colors.white),
               label: const Text('Гарах', style: TextStyle(color: Colors.white)),
             ),
@@ -172,55 +184,23 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     );
   }
 
+  // --- 3. YOU CAN DELETE _buildCreativePage() OR JUST LEAVE IT ---
+  // We are no longer using it in the _pages list.
 
-  Widget _buildCreativePage() {
-  return Container(
-    decoration: const BoxDecoration(
-      image: DecorationImage(
-        image: AssetImage('assets/back.jpg'),
-        fit: BoxFit.cover,
-      ),
-    ),
-    child: Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Lottie.asset('assets/lottie/creative.json', width: 250, height: 250),
-          const SizedBox(height: 20),
-          AnimatedTextKit(
-            animatedTexts: [
-              TypewriterAnimatedText(
-                'Шинэлэг санаа 🚀',
-                textStyle: const TextStyle(
-                    fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
-                speed: const Duration(milliseconds: 100),
-              ),
-              TypewriterAnimatedText(
-                'Бүтээлч ирээдүйг хамтдаа! 💡',
-                textStyle: const TextStyle(
-                    fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
-                speed: const Duration(milliseconds: 100),
-              ),
-            ],
-            repeatForever: true,
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
+  // --- 4. UPDATE THE _pages LIST ---
+  // Replace the 3rd item with your DiaryHomeScreen
   List<Widget> get _pages => [
         _buildHomePage(),
         _buildInfoPage(),
-        _buildCreativePage(),
+        const DiaryHomeScreen(), // <-- WAS: _buildCreativePage()
       ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Student App'),
+        // --- 5. MAKE THE TITLE DYNAMIC ---
+        title: Text(_pageTitles[_selectedIndex]), // <-- WAS: const Text('Student App')
         backgroundColor: Colors.deepPurple,
         foregroundColor: Colors.white,
       ),
@@ -231,11 +211,41 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             fit: BoxFit.cover, // makes the image fill the whole screen
           ),
         ),
-        child: AnimatedSwitcher(
-          duration: Duration(milliseconds: 400),
-          child: _pages[_selectedIndex],
+        // --- 6. USE INDEXEDSTACK INSTEAD OF ANIMATEDSWITCHER ---
+        // This keeps the state of your tabs (like scroll position) alive.
+        child: IndexedStack(
+          index: _selectedIndex,
+          children: _pages,
         ),
       ),
+
+      // --- 7. ADD THE CONDITIONAL FLOATING ACTION BUTTON ---
+      // This button will only appear when the diary tab (index 2) is selected.
+      floatingActionButton: _selectedIndex == 2
+          ? FloatingActionButton.extended(
+              icon: const Icon(Icons.add),
+              label: const Text("Add Entry"),
+              onPressed: () {
+                // This is the navigation from your old diary app
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (_, __, ___) => const AddEditScreen(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      final tween =
+                          Tween(begin: const Offset(0, 0.1), end: Offset.zero)
+                              .chain(CurveTween(curve: Curves.easeOut));
+                      return SlideTransition(
+                        position: animation.drive(tween),
+                        child: FadeTransition(opacity: animation, child: child),
+                      );
+                    },
+                  ),
+                );
+              },
+            )
+          : null, // Hide the button on other tabs
 
       bottomNavigationBar: ConvexAppBar(
         style: TabStyle.react,
@@ -245,7 +255,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         items: const [
           TabItem(icon: Icons.home, title: 'Home'),
           TabItem(icon: Icons.person, title: 'Profile'),
-          TabItem(icon: Icons.auto_awesome, title: 'Creative'),
+          // --- 8. UPDATE THE 3RD TAB'S ICON AND TITLE ---
+          TabItem(icon: Icons.book, title: 'Diary'), // <-- WAS: Icons.auto_awesome
         ],
         initialActiveIndex: _selectedIndex,
         onTap: (index) => setState(() => _selectedIndex = index),
